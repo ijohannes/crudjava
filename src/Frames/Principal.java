@@ -94,6 +94,8 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        popeliminar = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -113,6 +115,14 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabla = new javax.swing.JTable();
         btnimprimir = new javax.swing.JButton();
+
+        popeliminar.setText("Eliminar");
+        popeliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                popeliminarActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(popeliminar);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -230,6 +240,8 @@ public class Principal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabla.setColumnSelectionAllowed(true);
+        tabla.setComponentPopupMenu(jPopupMenu1);
         tabla.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tablaMouseClicked(evt);
@@ -358,6 +370,25 @@ public class Principal extends javax.swing.JFrame {
         this.txttelefono.setText(this.tabla.getValueAt(fila, 4).toString());
     }//GEN-LAST:event_tablaMouseClicked
 
+    private void popeliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_popeliminarActionPerformed
+        
+        try {
+            PreparedStatement ps = cn.prepareStatement("DELETE FROM empleados WHERE id='"+txtid.getText()+"'");
+            
+            int respuesta = ps.executeUpdate();
+            if(respuesta > 0){
+                JOptionPane.showMessageDialog(null, "Empleado eliminado");
+                limpiar();
+                mostrartabla("");
+            }else{
+                JOptionPane.showMessageDialog(null, "No ha seleccionado una fila");
+            }
+        } catch (Exception e) {
+            System.err.println("Error al eliminar..." + e);
+            JOptionPane.showMessageDialog(null, "Error al eliminar");
+        }
+    }//GEN-LAST:event_popeliminarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -406,7 +437,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenuItem popeliminar;
     private javax.swing.JTable tabla;
     private javax.swing.JTextField txtapellidos;
     private javax.swing.JTextField txtdireccion;
