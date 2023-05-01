@@ -7,6 +7,7 @@ package Frames;
 
 import Clases.Conectar;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -78,7 +79,7 @@ public class Principal extends javax.swing.JFrame {
             tabla.setModel(modelo);
                     
         } catch (SQLException e) {
-            System.err.println("Error en el llamado de la tabla");
+            System.err.println("Error en el llenado de la tabla... " + e);
             JOptionPane.showMessageDialog(null, "Error en el llenado de la tabla");
         }
               
@@ -146,6 +147,11 @@ public class Principal extends javax.swing.JFrame {
         });
 
         btnactualizar.setText("Actualizar");
+        btnactualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnactualizarActionPerformed(evt);
+            }
+        });
 
         btncancelar.setText("Cancelar");
 
@@ -224,6 +230,11 @@ public class Principal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabla);
 
         btnimprimir.setText("Imprimir Reporte");
@@ -288,12 +299,64 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnguardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnguardarActionPerformed
-        // TODO add your handling code here:
+        
+        try {
+            PreparedStatement ps = cn.prepareStatement("INSERT INTO empleados (nombres, apellidos, direccion, telefono) VALUES (?,?,?,?)");
+            ps.setString(1, txtnombres.getText());
+            ps.setString(2, txtapellidos.getText());
+            ps.setString(3, txtdireccion.getText());
+            ps.setString(4, txttelefono.getText());
+            
+            ps.executeUpdate();
+            limpiar();
+            mostrartabla("");
+            
+        } catch (SQLException e) {
+            System.err.println("Error al guardar... " + e);
+            JOptionPane.showMessageDialog(null, "Error al guardar");
+        }
+        
     }//GEN-LAST:event_btnguardarActionPerformed
 
     private void txttelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txttelefonoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txttelefonoActionPerformed
+
+    private void btnactualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnactualizarActionPerformed
+        
+        try {
+            PreparedStatement ps = cn.prepareStatement("UPDATE empleados SET "
+                    + "nombres='"+txtnombres.getText()+"', "
+                    + "apellidos='"+txtapellidos.getText()+"',"
+                    + "direccion='"+txtdireccion.getText()+"', "
+                    + "telefono='"+txttelefono.getText()+"' "
+                    + "WHERE id='"+txtid.getText()+"' ");
+            
+            int respuesta = ps.executeUpdate();
+            
+            if(respuesta > 0){
+                JOptionPane.showMessageDialog(null, "Datos actualizados");
+                limpiar();
+                mostrartabla("");
+            }else{
+                JOptionPane.showMessageDialog(null, "No ha seleccionado fila");
+            }
+        } catch (Exception e) {
+            
+            System.err.println("Error al actualizar... " + e);
+            JOptionPane.showMessageDialog(null, "Error al actualizar");
+        }
+    }//GEN-LAST:event_btnactualizarActionPerformed
+
+    private void tablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaMouseClicked
+        
+        int fila = this.tabla.getSelectedRow();
+        this.txtid.setText(this.tabla.getValueAt(fila, 0).toString());
+        this.txtnombres.setText(this.tabla.getValueAt(fila, 1).toString());
+        this.txtapellidos.setText(this.tabla.getValueAt(fila, 2).toString());
+        this.txtdireccion.setText(this.tabla.getValueAt(fila, 3).toString());
+        this.txttelefono.setText(this.tabla.getValueAt(fila, 4).toString());
+    }//GEN-LAST:event_tablaMouseClicked
 
     /**
      * @param args the command line arguments
