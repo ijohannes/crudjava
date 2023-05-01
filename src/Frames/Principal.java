@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -257,6 +260,11 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tabla);
 
         btnimprimir.setText("Imprimir Reporte");
+        btnimprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnimprimirActionPerformed(evt);
+            }
+        });
 
         jLabel7.setText("Buscar:");
 
@@ -431,6 +439,19 @@ public class Principal extends javax.swing.JFrame {
         
         limpiar();
     }//GEN-LAST:event_btncancelarActionPerformed
+
+    private void btnimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnimprimirActionPerformed
+        
+        try {
+            String path = "src\\Reportes\\ReporteEmpleados.jasper";
+            
+            JasperPrint informe = JasperFillManager.fillReport(path, null, cn);
+            JasperViewer ventanavisor = new JasperViewer(informe, false);
+            ventanavisor.setVisible(true);
+            
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_btnimprimirActionPerformed
 
     /**
      * @param args the command line arguments
